@@ -1,0 +1,66 @@
+<div class="cards--container">
+  <div class="products--header">
+    <h1>All Products</h1>
+  </div>
+  <div class="category--products">
+    <select
+      class="form-select"
+      aria-label="Default select example"
+      (change)="getFilterCategory($event)"
+    >
+      <option selected>All</option>
+      <option
+        [value]="category"
+        *ngFor="let category of categories; let i = index"
+      >
+        {{ category }}
+      </option>
+    </select>
+  </div>
+  <div class="all--carts" *ngIf="!loading">
+    <div *ngFor="let item of products; let i = index" class="card">
+      <img [src]="item.image" class="card-img-top" alt="Product image" />
+      <div class="card-body">
+        <div class="product--title-price">
+          <h5 class="card-title">
+            <a [routerLink]="['/product', item.id]"
+              >{{ item.title | slice : 0 : 10 }} ...</a
+            >
+          </h5>
+          <div class="card--price">
+            <h6>
+              <span>${{ item.price }}</span>
+            </h6>
+          </div>
+        </div>
+
+        <p class="card-text">{{ item.description | slice : 0 : 20 }} ...</p>
+        <div class="container--stars">
+          <fa-icon
+            *ngFor="let star of getStars(item.rating.rate)"
+            [icon]="faStar"
+          ></fa-icon>
+          <fa-icon
+            *ngIf="item.rating.rate % 1 !== 0"
+            [icon]="faStarHalf"
+          ></fa-icon>
+          <fa-icon
+            *ngFor="let emptyStar of getEmptyStars(item.rating.rate)"
+            [icon]="faStarOutline"
+          ></fa-icon>
+        </div>
+        <div class="cart--options">
+          <a class="btn addtocart--btn" (click)="AddToCart(item.id)"
+            >Add To Cart</a
+          >
+          <!-- <div class="quantity-container">
+            <input type="number" class="form-control" value="0" />
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-center w-100" *ngIf="loading">
+  <app-spinner></app-spinner>
+</div>

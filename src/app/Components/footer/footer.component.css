@@ -1,0 +1,58 @@
+ul.list-unstyled li a {
+  position: relative;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+}
+
+ul.list-unstyled li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: white;
+  transition: width 0.3s ease, right 0.3s ease;
+}
+
+ul.list-unstyled li a:hover::after {
+  width: 100%;
+  right: 0;
+}
+
+ul.list-unstyled li a:hover {
+  color: #ffc107; /* Change the color on hover */
+}
+
+address {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  .email--div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    transition: 0.3s all ease-in-out;
+    a {
+      color: var(--white-color);
+      transition: 0.3s all ease-in-out;
+    }
+
+    &:hover {
+      color: var(--secondary-color);
+      a {
+        color: var(--secondary-color);
+      }
+    }
+  }
+  div {
+    padding: 0.25rem 0;
+  }
+}

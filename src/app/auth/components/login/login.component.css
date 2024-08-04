@@ -49,13 +49,27 @@
 .btn {
   width: 100%;
 
-  a {
-    font-size: 16px;
-    font-weight: 600;
-  }
+  color: var(--white-color);
+  font-size: 16px;
+  font-weight: 600;
 }
 
+.dont--have-acount {
+  margin-top: 2rem;
+  text-align: center;
+  h6 {
+    font-weight: 200;
+    font-size: 1rem;
+    a {
+      cursor: pointer;
+      font-weight: 800;
+      text-decoration: underline;
+      color: black;
+    }
+  }
+}
 .btn:hover {
   background-color: var(--secodary-color);
-  color: var(--text);
+
+  color: black;
 }

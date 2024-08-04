@@ -1,6 +1,11 @@
 <div class="login--container">
-  <form class="login-form">
+  <form
+    class="login-form"
+    #loginForm="ngForm"
+    (ngSubmit)="SendLoginData(loginForm)"
+  >
     <h2 class="form-title">Login</h2>
+
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
       <input
@@ -9,11 +14,36 @@
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
         placeholder="Email Address"
+        ngModel
+        name="email"
+        #email="ngModel"
+        minlength="8"
+        required
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
       />
-      <div id="emailHelp" class="form-text">
-        We'll never share your email with anyone else.
+      <div
+        *ngIf="email.invalid && email.touched"
+        id="emailHelp"
+        class="form-text text-danger fs-6"
+      >
+        <div *ngIf="email.hasError('required') && !email.hasError('minlength')">
+          Email Address Is Required Field
+        </div>
+        <div *ngIf="email.hasError('minlength') && !email.hasError('required')">
+          Email Address Should Contain More than 8 Characters
+        </div>
+        <div
+          *ngIf="
+            email.hasError('pattern') &&
+            !email.hasError('required') &&
+            !email.hasError('minlength')
+          "
+        >
+          Email Address Is Not Valid
+        </div>
       </div>
     </div>
+
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Password</label>
       <input
@@ -21,14 +51,49 @@
         class="form-control"
         id="exampleInputPassword1"
         placeholder="Password"
+        ngModel
+        name="password"
+        #userPassword="ngModel"
+        required
       />
+      <div
+        *ngIf="userPassword.invalid && userPassword.touched"
+        id="passwordHelp"
+        class="form-text text-danger fs-6"
+      >
+        Password Is Required Field
+      </div>
     </div>
+
     <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1" />
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="exampleCheck1"
+        ngModel
+        name="rememberMe"
+        #rememberMe="ngModel"
+        required
+      />
       <label class="form-check-label" for="exampleCheck1">Remember me</label>
+
+      <div
+        *ngIf="rememberMe.invalid && rememberMe.touched"
+        class="form-text text-danger fs-6 mx-4"
+      >
+        You must agree before submitting.
+      </div>
     </div>
-    <button type="submit" class="btn btn-success">
-      <a routerLink="/"> Login </a>
+
+    <button
+      type="submit"
+      class="btn btn-success"
+      [disabled]="loginForm.invalid"
+    >
+      Login
     </button>
   </form>
+  <div class="dont--have-acount">
+    <h6>Dont Have an Account ? <a routerLink="/register">Register</a></h6>
+  </div>
 </div>

@@ -10,42 +10,62 @@
     >
       <option selected>All</option>
       <option
-        [value]="category"
+        [value]="category.slug"
         *ngFor="let category of categories; let i = index"
       >
-        {{ category }}
+        {{ category.slug }}
       </option>
     </select>
   </div>
   <div class="all--carts" *ngIf="!loading">
     <div *ngFor="let item of products; let i = index" class="card">
-      <img [src]="item.image" class="card-img-top" alt="Product image" />
+      <div
+        class="stock--sign"
+        [ngClass]="{
+          'out-of-stock': item.stock === 0,
+          'in-stock': item.stock > 0
+        }"
+      >
+        <h6 *ngIf="item.stock === 0" class="text-white">Out of stock</h6>
+        <h6 *ngIf="item.stock > 0" class="text-white">In Stock</h6>
+      </div>
+      <img [src]="item.thumbnail" class="card-img-top" alt="Product image" />
       <div class="card-body">
         <div class="product--title-price">
           <h5 class="card-title">
-            <a [routerLink]="['/product', item.id]"
+            <a
+              (click)="goToSinglePage(item.id)"
+              [routerLink]="['/details', item.id]"
               >{{ item.title | slice : 0 : 10 }} ...</a
             >
           </h5>
           <div class="card--price">
             <h6>
-              <span>${{ item.price }}</span>
+              <span *ngIf="item.discountPercentage">
+                ${{
+                  calculateDiscountedPrice(item.price, item.discountPercentage)
+                }}
+              </span>
+              <span *ngIf="item.discountPercentage">
+                <del>${{ item.price }}</del>
+              </span>
+              <span *ngIf="!item.discountPercentage"> ${{ item.price }} </span>
             </h6>
+            <!-- <span *ngIf="item.discountPercentage">
+              {{ item.discountPercentage }}% off
+            </span> -->
           </div>
         </div>
 
         <p class="card-text">{{ item.description | slice : 0 : 20 }} ...</p>
         <div class="container--stars">
           <fa-icon
-            *ngFor="let star of getStars(item.rating.rate)"
+            *ngFor="let star of getStars(item.rating)"
             [icon]="faStar"
           ></fa-icon>
+          <fa-icon *ngIf="item.rating % 1 !== 0" [icon]="faStarHalf"></fa-icon>
           <fa-icon
-            *ngIf="item.rating.rate % 1 !== 0"
-            [icon]="faStarHalf"
-          ></fa-icon>
-          <fa-icon
-            *ngFor="let emptyStar of getEmptyStars(item.rating.rate)"
+            *ngFor="let emptyStar of getEmptyStars(item.rating)"
             [icon]="faStarOutline"
           ></fa-icon>
         </div>

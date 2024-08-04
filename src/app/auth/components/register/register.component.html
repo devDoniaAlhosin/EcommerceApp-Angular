@@ -1,45 +1,151 @@
 <div class="login--container">
-  <form class="login-form">
+  <form
+    class="login-form"
+    [formGroup]="registerForm"
+    (ngSubmit)="registerData()"
+  >
     <h2 class="form-title">Register</h2>
-    <div class="mb-3">
-      <label for="username" class="form-label">Username</label>
-      <input
-        type="text"
-        class="form-control"
-        id="username"
-        placeholder="Username"
-      />
-    </div>
-    <div class="mb-3">
+    <div class="mb-4">
       <label for="email" class="form-label">Email address</label>
       <input
         type="email"
         class="form-control"
         id="email"
         placeholder="Email Address"
+        formControlName="email"
       />
-      <div id="emailHelp" class="form-text">
+      <div *ngIf="registerForm.controls['email'].touched">
+        <div
+          *ngIf="registerForm.controls['email'].hasError('required')"
+          id="emailHelp"
+          class="form-text text-danger"
+        >
+          Email Address is A Required Field
+        </div>
+        <div
+          *ngIf="
+            registerForm.controls['email'].hasError('email') &&
+            !registerForm.controls['email'].hasError('required')
+          "
+          id="emailHelp"
+          class="form-text text-danger"
+        >
+          Your Email-Address is in a Wrong Format
+        </div>
+      </div>
+      <div *ngIf="registerForm.controls['email'].valid" class="form-text">
         We'll never share your email with anyone else.
       </div>
     </div>
-    <div class="mb-3">
+    <div class="mb-4">
+      <label for="name" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        placeholder="Enter Your Name"
+        formControlName="name"
+      />
+      @if(registerForm.controls['name'].invalid &&
+      registerForm.controls['name'].touched){
+      <div id="emailHelp" class="form-text text-danger">
+        Name is A Required Field
+      </div>
+      }
+    </div>
+
+    <div class="mb-4">
+      <label for="username" class="form-label">Username</label>
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        placeholder="Username"
+        formControlName="username"
+      />
+      <div
+        *ngIf="
+          registerForm.controls['username'].invalid &&
+          registerForm.controls['username'].touched
+        "
+        class="form-text text-danger"
+      >
+        <div *ngIf="registerForm.controls['username'].hasError('required')">
+          Username is A Required Field
+        </div>
+        <div *ngIf="registerForm.controls['username'].hasError('noSpaces')">
+          Username Should Not Contain Spaces
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
       <label for="password" class="form-label">Password</label>
       <input
         type="password"
         class="form-control"
         id="password"
         placeholder="Password"
+        formControlName="password"
       />
+      <div
+        *ngIf="
+          registerForm.controls['password'].invalid &&
+          registerForm.controls['password'].touched
+        "
+        class="form-text text-danger pt-0"
+      >
+        <div *ngIf="registerForm.controls['password'].hasError('required')">
+          Password is A Required Field
+        </div>
+        <div *ngIf="registerForm.controls['password'].hasError('minlength')">
+          Password Must Be At Least 8 Characters Long
+        </div>
+        <div
+          *ngIf="registerForm.controls['password'].hasError('passwordStrength')"
+        >
+          Password Must Contain At Least One Lowercase, One Uppercase, One
+          Digit, and One Special Character
+        </div>
+      </div>
     </div>
-    <div class="mb-3">
+    <div class="mb-4">
       <label for="confirmPassword" class="form-label">Confirm Password</label>
       <input
         type="password"
         class="form-control"
         id="confirmPassword"
         placeholder="Confirm Password"
+        formControlName="confirmPassword"
       />
+      <div *ngIf="registerForm.controls['confirmPassword'].touched">
+        <div
+          *ngIf="registerForm.controls['confirmPassword'].hasError('required')"
+          class="form-text text-danger pt-0"
+        >
+          Confirm Your Password is A Required Field
+        </div>
+        <div
+          *ngIf="
+            !registerForm.controls['confirmPassword'].hasError('required') &&
+            registerForm.hasError('passwordMismatch')
+          "
+          class="form-text text-danger pt-0"
+        >
+          Passwords Do Not Match
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-success">Register</button>
+
+    <button
+      type="submit"
+      class="btn btn-success"
+      [disabled]="registerForm.invalid"
+    >
+      Register
+    </button>
   </form>
+  <div class="dont--have-acount">
+    <h6>Already Have An Account ? <a routerLink="/login">Login</a></h6>
+  </div>
 </div>

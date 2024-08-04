@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
 import { faStarHalf } from '@fortawesome/free-solid-svg-icons/faStarHalf';
 import { faStar as faStarOutline } from '@fortawesome/free-regular-svg-icons/faStar'; // Import empty star icon
 import { ProductsService } from '../../service/products.service';
-import { NgFor, NgIf, SlicePipe, UpperCasePipe } from '@angular/common';
+import {
+  NgClass,
+  NgFor,
+  NgIf,
+  SlicePipe,
+  UpperCasePipe,
+} from '@angular/common';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { CartService } from '../../../carts/services/carts.service';
 
 @Component({
   selector: 'app-all-products',
@@ -19,6 +26,7 @@ import { SpinnerComponent } from '../../../shared/components/spinner/spinner.com
     NgIf,
     UpperCasePipe,
     SpinnerComponent,
+    NgClass,
   ],
   templateUrl: './all-products.component.html',
   styleUrls: ['./all-products.component.css'],
@@ -32,7 +40,11 @@ export class AllProductsComponent implements OnInit {
   cartProducts: any[] = [];
   loading: boolean = true;
 
-  constructor(private services: ProductsService) {}
+  constructor(
+    private services: ProductsService,
+    private router: Router,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this.getProducts();
@@ -42,24 +54,12 @@ export class AllProductsComponent implements OnInit {
   getProducts() {
     this.loading = true;
     this.services.getProducts().subscribe((res: any) => {
-      this.products = res;
+      this.products = res.products;
       this.loading = false;
       console.log(res);
     });
   }
 
-  getStars(rating: number): number[] {
-    const fullStars = Math.floor(rating);
-    return new Array(fullStars).fill(0);
-  }
-
-  getEmptyStars(rating: number): number[] {
-    const totalStars = 5;
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    return new Array(totalStars - fullStars - (hasHalfStar ? 1 : 0)).fill(0);
-  }
-  // Get Category
   getCategory() {
     this.loading = true;
     this.services.getCategories().subscribe((res: any) => {
@@ -68,44 +68,79 @@ export class AllProductsComponent implements OnInit {
       console.log(res);
     });
   }
+
   getFilterCategory(event: any) {
     let value = event.target.value;
     console.log(value);
-    value === 'All' ? this.getProducts() : this.getProductCategory(value);
+
+    if (value === 'All') {
+      this.getProducts();
+    } else {
+      this.loading = true;
+      this.services.getProductsByCategory(value).subscribe((res: any) => {
+        this.products = res.products || res;
+        this.loading = false;
+      });
+    }
   }
-  // i wanna get all products and update my products array
+
   getProductCategory(val: string) {
     this.loading = true;
     this.services.getProductsByCategory(val).subscribe((res: any) => {
-      this.products = res;
+      this.products = res.products || res;
       this.loading = false;
     });
   }
 
-  // Cart
+  // Get full stars
+  getStars(rating: number): number[] {
+    const fullStars = Math.floor(rating);
+    return new Array(fullStars).fill(0);
+  }
+
+  // Get empty stars
+  getEmptyStars(rating: number): number[] {
+    const totalStars = 5;
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    return new Array(totalStars - fullStars - (hasHalfStar ? 1 : 0)).fill(0);
+  }
+
   AddToCart(id: any) {
-    let product = this.products.find((val: any) => val.id === id);
-    console.log(product);
-
-    if (product) {
-      if ('cart' in localStorage) {
-        this.cartProducts = JSON.parse(localStorage.getItem('cart')!);
-      } else {
-        this.cartProducts = [];
-      }
-
-      let exists = this.cartProducts.find((item: any) => item.id === id);
-
-      if (exists) {
-        exists.quantity += 1; // Increment the quantity if the product already exists
-        alert('Product quantity updated in the cart');
-      } else {
-        product.quantity = 1; // Set initial quantity to 1 if the product doesn't exist
-        this.cartProducts.push(product);
-        console.log('Product added to cart:', product);
-      }
-
-      localStorage.setItem('cart', JSON.stringify(this.cartProducts));
+    const product = this.products.find((val: any) => val.id === id);
+    if (!product) {
+      console.error('Product not found:', id);
+      return;
     }
+
+    console.log('Selected Product:', product);
+
+    const storedCart = localStorage.getItem('cart');
+    this.cartProducts = storedCart ? JSON.parse(storedCart) : [];
+
+    const existingItem = this.cartProducts.find((item: any) => item.id === id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+      alert('Product quantity updated in the cart');
+    } else {
+      product.quantity = 1;
+      this.cartProducts.push(product);
+      console.log('Product added to cart:', product);
+    }
+
+    try {
+      localStorage.setItem('cart', JSON.stringify(this.cartProducts));
+    } catch (error) {
+      console.error('Error storing cart in localStorage:', error);
+    }
+  }
+
+  calculateDiscountedPrice(price: number, discountPercentage: number): number {
+    const discountedPrice = price - price * (discountPercentage / 100);
+    return parseFloat(discountedPrice.toFixed(2));
+  }
+  goToSinglePage(id: any) {
+    this.router.navigate(['details', id]);
   }
 }

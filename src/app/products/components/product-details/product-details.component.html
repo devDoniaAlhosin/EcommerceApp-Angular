@@ -1,1 +1,99 @@
-<p>product-details works!</p>
+<section class="singleproduct--details-container">
+  <div class="singleProduct-imgs">
+    <div class="img-top">
+      <img [src]="data.thumbnail" alt="" />
+    </div>
+    <div class="imgs-bottom--container">
+      <div *ngFor="let imgs of data.images" class="Singleimgs-div">
+        <img [src]="imgs" alt="" />
+      </div>
+    </div>
+  </div>
+  <div class="singleProduct-content">
+    <div class="header-details">
+      <h2>{{ data.title }}</h2>
+      <div class="productDetails">
+        <p>
+          {{ data.description }}
+        </p>
+      </div>
+      <div class="starts--rating d-flex">
+        <div class="container--stars">
+          <fa-icon [icon]="faStar"></fa-icon>
+          <fa-icon [icon]="faStar"></fa-icon>
+          <fa-icon [icon]="faStar"></fa-icon>
+          <fa-icon [icon]="faStarHalf"></fa-icon>
+        </div>
+        <span>(30)</span>
+      </div>
+    </div>
+    <div class="more--info">
+      <div class="price-info d-flex gap-1">
+        <div class="price">
+          <h1>$ {{ getDiscountedPrice() | number : "1.2-2" }}</h1>
+          <del *ngIf="getDiscountPercentage() > 0">
+            {{ data.price | number : "1.2-2" }}
+          </del>
+        </div>
+
+        <div class="percentage">
+          <span *ngIf="getDiscountPercentage() > 0">
+            {{ getDiscountPercentage() }}% Off
+          </span>
+        </div>
+      </div>
+
+      <p>{{ data.returnPolicy }}</p>
+    </div>
+    <div class="product-single--categories">
+      <div class="stock--btn">
+        <button class="btn" [ngClass]="getStockStatus()">
+          {{ data.stock > 0 ? "In Stock" : "Out of Stock" }}
+        </button>
+      </div>
+      <div class="text--sku">
+        SKU : <span>{{ data.sku }}</span>
+      </div>
+      <div class="btn--related-categories">
+        <h6>Tags</h6>
+        <button
+          *ngFor="let tag of data.tags"
+          class="btn"
+          (click)="filterByTag(tag)"
+        >
+          {{ tag }}
+        </button>
+      </div>
+    </div>
+    <div class="addToCart-container">
+      <div class="quantity-count">
+        <div class="input-group gap-2">
+          <button
+            class="btn btn-outline-secondary rounded"
+            type="button"
+            (click)="decrement()"
+          >
+            -
+          </button>
+          <input
+            type="text"
+            class="form-control text-center"
+            value="0"
+            readonly
+          />
+          <button
+            class="btn btn-outline-secondary rounded"
+            type="button"
+            (click)="increment()"
+          >
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="addToCart-Btns">
+      <button class="btn buyNow-btn">Buy Now</button>
+      <button class="btn">Add To Cart</button>
+    </div>
+  </div>
+</section>

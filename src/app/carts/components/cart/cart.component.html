@@ -1,1 +1,99 @@
-<p>cart works!</p>
+<div *ngIf="cartProducts.length > 0; else emptyCart">
+  <div class="cartBox">
+    <h1 class="text-danger">Shopping Cart</h1>
+    <div class="headCart">
+      <p class="lead">
+        You have
+        <label class="text-danger">{{ cartProducts.length }}</label> item(s) in
+        your cart.
+      </p>
+      <span class="text-danger card-header" (click)="clearCart()"
+        >Clear Shopping Cart</span
+      >
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Price</th>
+          <th style="width: 15%">Quantity</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-center" *ngFor="let item of cartProducts">
+          <td><img [src]="item.image" alt="" /></td>
+          <td>{{ item.title | slice : 0 : 20 }} ..</td>
+          <td>${{ item.price.toFixed(2) }}</td>
+          <td>
+            <div class="quantity">
+              <button class="btn btn-dark" (click)="decreaseQuantity(item)">
+                -
+              </button>
+              <input
+                class="form-control"
+                type="number"
+                min="1"
+                [max]="item.stock"
+                [(ngModel)]="item.quantity"
+                (ngModelChange)="updateTotalPrice()"
+              />
+              <button class="btn btn-dark" (click)="increaseQuantity(item)">
+                +
+              </button>
+            </div>
+          </td>
+          <td>${{ (item.price * item.quantity).toFixed(2) }}</td>
+          <td>
+            <button class="btn btn-danger" (click)="removeItem(item)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot></tfoot>
+    </table>
+
+    <div class="total-amount mb-5">
+      <table class="table w-25">
+        <tbody>
+          <tr>
+            <td>SubTotal</td>
+            <td>${{ getSubTotal().toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td>Total Amount</td>
+            <td>${{ getSubTotal().toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="checkOut-container">
+      <button class="btn btn-success w-100" (click)="orderNow()">
+        Order Now
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyCart>
+  <div class="notFoundContainer">
+    <div class="card text-center">
+      <div class="card-header">Empty Cart</div>
+      <div class="card-body">
+        <div class="icon-div">
+          <fa-icon [icon]="faCartShopping"></fa-icon>
+        </div>
+        <h5 class="card-title fs-2">Empty Cart</h5>
+        <p class="card-text">
+          Your cart is empty. Go to the home page and continue shopping.
+        </p>
+        <a routerLink="/" class="btn">Go to Homepage</a>
+      </div>
+      <div class="card-footer text-muted">Enjoy Your Shopping Experience</div>
+    </div>
+  </div>
+</ng-template>

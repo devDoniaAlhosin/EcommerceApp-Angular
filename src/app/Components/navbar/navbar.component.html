@@ -53,9 +53,10 @@
       >
         <fa-icon [icon]="faCartShopping" class="faCartShopping fs-5"> </fa-icon>
         <span
-          class="position-absolute top-30 start-100 translate-middle badge rounded-pill bg-danger"
+          *ngIf="getCartLength() > 0"
+          class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger"
         >
-          9
+          {{ getCartLength() }}
         </span>
       </a>
     </div>

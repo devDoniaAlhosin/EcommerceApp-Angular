@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/internal/Observable';
   providedIn: 'root',
 })
 export class ProductsService {
-  private apiUrl = 'https://fakestoreapi.com';
+  private apiUrl = 'https://dummyjson.com';
 
   constructor(private http: HttpClient) {}
 
@@ -19,5 +19,8 @@ export class ProductsService {
 
   getProductsByCategory(keyword: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/products/category/${keyword}`);
+  }
+  getProductById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/products/${id}`);
   }
 }

@@ -103,3 +103,25 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+}
+
+@media (max-width: 576px) {
+  .cartBox[_ngcontent-ng-c2564537568]
+    .table[_ngcontent-ng-c2564537568]
+    .quantity[_ngcontent-ng-c2564537568]
+    input[_ngcontent-ng-c2564537568] {
+    margin: 0 4px;
+  }
+  .cartBox[_ngcontent-ng-c2564537568]
+    .table[_ngcontent-ng-c2564537568]
+    tbody[_ngcontent-ng-c2564537568]
+    tr[_ngcontent-ng-c2564537568]
+    td[_ngcontent-ng-c2564537568] {
+    border-bottom: 0;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 10px;
+  }
+}

@@ -75,6 +75,5 @@ export class ProductDetailsComponent implements OnInit {
   }
   filterByTag(tag: string) {
     console.log('Filter by tag:', tag);
-    // Add logic to filter products by the selected tag
   }
 }
